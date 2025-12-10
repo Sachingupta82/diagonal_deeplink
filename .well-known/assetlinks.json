@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "in.paramappslab.diagonal",
+      "sha256_cert_fingerprints": [
+        "9A:F5:16:7B:D6:36:DB:A9:49:62:32:71:B7:09:1E:3F:AE:62:41:AB:3C:9D:93:11:A1:06:76:57:9A:0B:F6:56"
+      ]
+    }
+  }
+]
