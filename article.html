@@ -3,64 +3,127 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Opening Article...</title>
+    <title>Diagonal News - Article</title>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
         body {
-            font-family: Arial, sans-serif;
-            background: linear-gradient(135deg, #0A1E3D, #1E3A5F);
-            color: white;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0A1E3D 0%, #1E3A5F 100%);
+            min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            min-height: 100vh;
-            text-align: center;
-            padding: 20px;
+            color: white;
         }
+        
+        .container {
+            text-align: center;
+            padding: 40px 20px;
+            max-width: 500px;
+        }
+        
+        .logo {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+        
+        h1 {
+            font-size: 28px;
+            margin-bottom: 16px;
+        }
+        
+        p {
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+        
         .spinner {
-            border: 4px solid rgba(255,255,255,0.3);
-            border-top: 4px solid white;
-            border-radius: 50%;
+            margin: 30px auto;
             width: 50px;
             height: 50px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
             animation: spin 1s linear infinite;
-            margin: 0 auto 20px;
         }
+        
         @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            to { transform: rotate(360deg); }
         }
-        h2 { margin-bottom: 15px; }
-        p { font-size: 1.1em; margin: 10px 0; }
-        a {
-            color: #4FC3F7;
+        
+        .download-btn {
+            display: inline-block;
+            background: white;
+            color: #0A1E3D;
+            padding: 16px 32px;
+            border-radius: 30px;
             text-decoration: none;
             font-weight: bold;
+            font-size: 16px;
+            transition: transform 0.2s;
+            margin-top: 20px;
+        }
+        
+        .download-btn:hover {
+            transform: scale(1.05);
+        }
+        
+        .hidden {
+            display: none;
         }
     </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">📰</div>
+        <h1>Opening in Diagonal News...</h1>
+        <p id="status">Redirecting to the app</p>
+        <div class="spinner" id="spinner"></div>
+        
+        <div id="fallback" class="hidden">
+            <p>Don't have the app yet?</p>
+            <a href="https://play.google.com/store/apps/details?id=in.paramappslab.diagonal" 
+               class="download-btn">
+                Download Diagonal News
+            </a>
+        </div>
+    </div>
+
     <script>
-        // Extract article ID from URL
-        const url = window.location.href;
-        const match = url.match(/article\/([^\/\?]+)/);
-        const articleId = match ? match[1] : 'unknown';
+        // Get article ID from URL path
+        const pathParts = window.location.pathname.split('/');
+        const articleId = pathParts[pathParts.length - 1] || pathParts[pathParts.length - 2];
         
         console.log('Article ID:', articleId);
         
-        // Try to open in app
-        const appLink = `diagonalapp://article/${articleId}`;
-        window.location.href = appLink;
+        // Try to open app using custom scheme
+        const appUrl = `diagonalapp://article/${articleId}`;
         
-        // Fallback to Play Store after 2.5 seconds
+        // Attempt 1: Direct navigation
+        window.location.href = appUrl;
+        
+        // Attempt 2: Using iframe (works better on some devices)
         setTimeout(() => {
-            window.location.href = 'https://play.google.com/store/apps/details?id=in.paramappslab.diagonal';
-        }, 2500);
+            const iframe = document.createElement('iframe');
+            iframe.style.display = 'none';
+            iframe.src = appUrl;
+            document.body.appendChild(iframe);
+        }, 500);
+        
+        // Show fallback after 3 seconds if app didn't open
+        setTimeout(() => {
+            document.getElementById('spinner').classList.add('hidden');
+            document.getElementById('status').textContent = 
+                'Unable to open the app automatically.';
+            document.getElementById('fallback').classList.remove('hidden');
+        }, 3000);
     </script>
-</head>
-<body>
-    <div>
-        <div class="spinner"></div>
-        <h2>📰 Opening in Diagonal News...</h2>
-        <p>If the app doesn't open automatically,</p>
-        <p><a href="https://play.google.com/store/apps/details?id=in.paramappslab.diagonal">download it from Play Store</a></p>
-    </div>
 </body>
 </html>
